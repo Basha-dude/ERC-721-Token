@@ -22,8 +22,9 @@ describe("ERC-721", () => {
   describe("Failure", () => {
     it("should revert when the input address is zero", async () => {
         await expect(erc721.balanceOf('0x0000000000000000000000000000000000000000')).to.be.reverted;
-
-      
+      });
     });
-  });
+
+   
+    
 });

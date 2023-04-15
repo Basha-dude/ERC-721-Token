@@ -24,6 +24,7 @@ contract ERC721 {
         address indexed _approved,
        uint256 indexed _tokenId
        );
+     event Transfer(address indexed _from, address indexed  _to, uint256 indexed _tokenId); 
 
     constructor (string memory _name, string memory _symbol) {
         name = _name;
@@ -55,8 +56,39 @@ contract ERC721 {
            tokenIdApproval[_tokenId] = _approved;
                 emit Approval(owner,_approved,_tokenId);
     }
-    function getApproved(uint256 _tokenId) external view returns (address) {
+    
+    function getApproved (uint256 _tokenId) public view returns (address) {
         require(_owners[_tokenId] != address(0));
         return tokenIdApproval[_tokenId];
     }     
-}
+
+    function transferFrom(address _from, address _to, uint256 _tokenId) public  {
+          address owner  =  _owners[_tokenId];
+          require(msg.sender == owner || getApproved(_tokenId) == msg.sender|| isApprovedForAll(owner,msg.sender));
+          require(owner == _from);
+        require(_owners[_tokenId] != address(0));
+         _balance[_from]  -= 1;
+         _balance[_to]  += 1;
+         _owners[_tokenId] = _to; 
+
+         approve(address(0), _tokenId);
+         emit Transfer( _from, _to, _tokenId);
+    }
+
+     function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes memory data) public {
+        transferFrom(_from, _to, _tokenId);
+        require(_checkOnERC721Received());
+
+    }
+      function _checkOnERC721Received () private pure returns (bool) {
+            return true;
+      }   
+
+      function safeTransferFrom(address _from, address _to, uint256 _tokenId) public {
+             safeTransferFrom(_from, _to, _tokenId,"");
+         }
+      function supportsInterface(bytes4 interfaceID) external view returns (bool) {
+            return interfaceID == 0x80ac58cd;
+           }
+  }
+

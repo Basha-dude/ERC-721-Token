@@ -8,7 +8,7 @@ contract ERC721 {
     string public name;
     string public symbol;
 
-    mapping (address => uint) private  _balance;
+    mapping (address => uint) private  _balances;
     mapping (uint => address) public  _owners;
     mapping (address => mapping (address => bool)) internal  operatorsApproval;
     mapping (uint256 => address) internal  tokenIdApproval;
@@ -33,7 +33,7 @@ contract ERC721 {
 
     function balanceOf(address _owner) public view returns (uint256) {
         require(_owner !=  address(0));
-        return _balance[_owner];
+        return _balances[_owner]; 
     }
 
     function ownerOf(uint256 _tokenId) public view returns (address) {
@@ -67,8 +67,8 @@ contract ERC721 {
           require(msg.sender == owner || getApproved(_tokenId) == msg.sender|| isApprovedForAll(owner,msg.sender));
           require(owner == _from);
         require(_owners[_tokenId] != address(0));
-         _balance[_from]  -= 1;
-         _balance[_to]  += 1;
+         _balances[_from]  -= 1;
+         _balances[_to]  += 1;
          _owners[_tokenId] = _to; 
 
          approve(address(0), _tokenId);
